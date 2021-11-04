@@ -1,0 +1,193 @@
+// Banco GGI
+
+
+Conta
+association Cliente
+---
+- numero: String
+- senha: String
+- saldo: Double
+- ativa: Boolean
+- dataCriacao: Date
+---
+//C
++ Conta(numConta:str, senhaEncriptada:str, dataCriacao:Date)
+//R
++ getSaldo():Double
++ toString():String
++ comparaSenha(senha:str):boolean
+//U
++ recebeDeposito(valor: Double): boolan
++ saque(valor:Double):boolean
++ setSenha(antigaSenha:str, senhaEncriptada:str):void
++ desativaConta(senha:str):boolean
++ ativaConta(senha:str):boolean
+---
+
+
+Cliente
+---
+- nome:String
+- dataNascimento:Date
+- cpf:Int
+- Integer:numConta
+- endereco:String
+- logado:boolean
+---
+//C
++ Cliente(cpf:int, nome:str, dataNascimento:Date, conta:Conta)
+//R
++ getCPF():String
++ comparaEndereco(endereco:str):boolean
++ toString():String
++ getNumConta(conta:Conta):int
++ validaSenha(senha:String):boolean
++ getNome():str
+//U
++ setEndereco(novoEndereco:str):void
++ setNome(novoNome:str):void
++ setDataNascimento(novaData:Date):void //em casos raros
++ solicitaDepositoQuantia(valor:Double):boolean
++ solicitaSaque(valor:Double, senha:str):boolean
++ logar(cpf:int):boolean
++ solicitaDesativacaoConta(cpf:int, senha:str):void
++ reativaConta(cpf:int, senha:str):boolean
++ updateSenhaConta(cpf: String, antigaSenha:String, senhaEncriptada:String):void
+---
+
+
+Banco
+---
+- controllerConta:ControllerConta
+- controllerCliente:ControllerCliente
+---
+//C
++ solicitaCriacaoConta(senha:str):void
++ solicitaCriacaoCliente(nome:str, cpf:str, dataNascimento:str):void
+//R
++ fazLogin(numCPF:String, senha:String):boolean
+//U
++ solicitaSaque(numCPF:String, senha:String, valor:Double):void
++ solicitaTransferencia(numCPF:String, senha:String, valor:Double, contaDesatino:int):void
++ solicitaDeposito(numCPF:String):void
++ solicitaDesativarConta(numCPF:String, senha:String):boolean
++ ExcluiConta(numCPF:String, senha:String):void
++ atualizaDadosCliente(numCPF:String, senha:String, novoEndereco:str, novoNome:str, novaDataNascimento:str):void
++ modificaSenhaConta(cpf:str, antigaSenha:str, str:NovaSenha):void
+---
+
+
+ControllerConta
+association Banco
+---
+- service:ServiceConta
+---
+//C
++ requisitaCriacaoConta(senha:str):void
+//R
++ solicitaSaldo(numConta:str):Double
++ retornaNumeroConta(cpf:str):str
++ retornaNomeCliente(cpf:str):str
+//U
++ realizaSaque(numConta:str, valor:Double):boolean
++ recebeDesposito(cpf:str, valor:Double):void
+---
+
+ServiceConta
+association ControllerConta
+association ServiceCliente
+---
+- repository:Repository
+- data:Date
+---
+//C
++ preparaRegistroConta(senha:String): void
+- geraNumConta():String
+- encriptaSenha(senha:str):String //proteced
+- geraDataCriacao():Date
+//R
+- recuperaConta(cpfCliente:int):Conta //protected
++ verificaExistenciaConta(numConta:str):boolean
++ retornaSado(numConta:str):Double
+//U
++ atualizaSaldoConta(valor:Double):boolean
++ saque(numConta:int, valor:Double):void
+//D
++ excluiConta(numConta:str, senha:str):boolean //exclui tambem o cliente
+---
+
+
+RepositoryConta
+association ServiceConta
+---
+- spring: SpringBoot
+- bd: MySQL
+---
+//C
++ registraConta(senhaEncriptada:str, numeroGerado:int, dataCriacao:Date):boolean
+//R
++ recuperaConta(numConta:int):Conta 
++ verificaExistenciaConta(numConta:int):boolean
+//U
++ atualizaSaldoConta(conta:Conta):boolean
+//D
++ excluiConta(numConta:int, senhaEncriptada:str):boolean
+---
+
+
+
+ControllerCliente
+association Banco
+---
+- service:Service
+---
+//C
++ requisitaCriacaoCliente(cpf:str, nome:str, dataNascimento:str):void
+//R
+- recuperaCliente(cpf:str):Cliente
++ retornaNomeCliente(cpf:str):str
++ retornaEndereco(cpf:str):str
++ retornaDadosCliente(cpf:str):str //toString de cliente
+//U
++ atualizaEndereco(cpf:str, novoEndereco:str):boolean
++ atualizaNome(cpf:str, novoNome:str):boolean
++ requisitouLogin(numConta:str, senha:str):void
++ solicitouModificarSenha(cpf:str, antigaSenha:str, str:NovaSenha):void
+//D
++ excluiCliente(cpf:str, senha:str):boolean
+---
+
+ServiceCliente
+association ControllerCliente
+---
+- repository:Repository
+- data:Date
+- serviceConta:ServiceConta
+---
+//C
++ preparaRegistroCliente(cpf:str, nome:str, dataNascimento:Date):boolean //atraves deste metodo se chama recuperaConta do serviceConta
+//R
+- recuperaCliente(cpf:str): Cliente
+//U
++ atualizaNomeCliente(cpf:str, novoNome:str):boolean
++ atualizaEnderecoCliente(cpf:str, novoEndereco:str):boolean
++ atualizaSenha(cpf:str, antigaSenha:str, str:NovaSenha):void //chama o encriptasenha do servCont
+//D
++ excluiCliente(numCPF:str):boolean
+---
+
+RepositoryCliente
+association ServiceCliente
+---
+- spring: SpringBoot
+- bd: MySQL
+---
+//C
++ registraCliente(cpf:str, nome:str, idade:str, dataNascimento:Date, conta:Conta):boolean
+//R
++ recuperaCliente(cpf:int): Cliente 
+//U
++ atualizaCliente(cliente:Cliente):boolean
+//D
++ excluiCliente(cpf:str):void
+---
