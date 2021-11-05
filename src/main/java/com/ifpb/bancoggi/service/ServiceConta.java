@@ -33,7 +33,6 @@ public class ServiceConta {
         //o numero da conta vai ser gerado, nao precisa passar como parametro
         senha = encriptaSenha(senha);
         Date dataCriacao = geraDataCriacao();
-        
     }
 
     //acho que nao precisa dessa
