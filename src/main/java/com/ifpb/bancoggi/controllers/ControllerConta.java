@@ -2,28 +2,51 @@ package com.ifpb.bancoggi.controllers;
 
 import com.ifpb.bancoggi.entidades.Cliente;
 import com.ifpb.bancoggi.entidades.Conta;
+import com.ifpb.bancoggi.service.ServiceConta;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
 @RestController
+@NoArgsConstructor
 public class ControllerConta {
 
-    Date data;
-    Conta conta = new Conta(123, "xxxx", 20.20, true, data);
+    private ServiceConta serviceConta;
+
+    public void requisitaCriacaoConta(String senha, Integer numConta){
+        serviceConta.preparaRegistroConta(senha, numConta);
+    }
+
+    @RequestMapping("/saldo")
+    public Double solicitaSaldo(Integer numConta){
+        return serviceConta.retornaSaldo(numConta);
+    }
+
+    public Integer retornaNumConta(String cpf){
+        //ainda não existe essa relacao
+        return 1;
+    }
+
+    public String retornaNomeCliente(String cpf){
+        //ainda não existe essa relacao
+        return "joaquim";
+    }
 
     @RequestMapping("/saque")
-    public Double saque() {
-        Double valor = 15.0;
-        return conta.saque(valor);
+    public void realizaSaque(Integer numConta, Double valor){
+        serviceConta.saque(numConta, valor);
+    }
+
+    @RequestMapping("/deposito")
+    public void recebeDeposito(Integer numConta, Double valor){
+        serviceConta.deposito(numConta, valor);
     }
 
     @RequestMapping("/informacoesConta")
-    public String exibeInformacoes() {
-        conta.toString();
-
-        return  conta.toString();
+    public String exibeInformacoes(Integer numConta) {
+        return serviceConta.localizaConta(numConta).toString();
     }
 
 }

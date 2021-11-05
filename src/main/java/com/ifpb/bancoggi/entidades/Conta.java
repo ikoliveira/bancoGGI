@@ -28,10 +28,4 @@ public class Conta {
     @Getter
     private Date dataCriacao;
 
-    public Double saque(Double valor){
-        Double novoSaldo = this.saldo - valor;
-        setSaldo(novoSaldo);
-        return this.saldo;
-    }
-
 }
