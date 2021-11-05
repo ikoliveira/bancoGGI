@@ -4,29 +4,34 @@ import lombok.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = {"logado", "dataNascimento"})
+@Table(name = "tbl_clientes", schema = "db_relationships")
 public class Cliente {
-
-    @Getter @Setter
-    private String nome;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
+    @Column(name = "cliente_id", updatable = false, nullable = false)
     private Integer cpf;
+
+
+    @Getter @Setter
+    @Column(name = "cliente_name", updatable = false, nullable = false)
+    private String nome;
 
     @Getter @Setter
     private Date dataNascimento;
 
     @Getter @Setter
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "conta_cliente_id")
     private Conta conta;
 
     @Getter @Setter private String endereco;
