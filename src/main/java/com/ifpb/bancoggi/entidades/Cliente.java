@@ -26,17 +26,25 @@ public class Cliente {
     @Getter @Setter
     private Date dataNascimento;
 
-    @Getter
-    private Integer numConta;
+    @Getter @Setter
+    private Conta conta;
 
     @Getter @Setter private String endereco;
 
     @Getter @Setter
     private boolean logado;
 
+    @Getter @Setter
+    private String email;
+
+
     public boolean comparaEndeceo(String endereco){
 
         return this.endereco.equals(endereco);
+    }
+
+    public void logar(){
+        setLogado(true);
     }
 
 }
