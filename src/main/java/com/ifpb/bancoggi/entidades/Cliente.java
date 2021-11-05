@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
 
-
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +35,7 @@ public class Cliente {
     private boolean logado;
 
     public boolean comparaEndeceo(String endereco){
+
         return this.endereco.equals(endereco);
     }
 

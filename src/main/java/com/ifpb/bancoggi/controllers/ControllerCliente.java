@@ -12,8 +12,10 @@ public class ControllerCliente {
     @RequestMapping("/")
     public boolean comparaEndereco() {
         Cliente cliente = new Cliente();
-        cliente.setEndereco("oai");
+        cliente.setEndereco("oi");
         return cliente.comparaEndeceo("oi");
     }
+
+
 
 }
