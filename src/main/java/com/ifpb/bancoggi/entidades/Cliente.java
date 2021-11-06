@@ -16,11 +16,9 @@ import java.util.Date;
 public class Cliente {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
-    @Column(name = "cliente_id", updatable = false, nullable = false)
+    @Column(name = "cliente_id", updatable = false, nullable = false, unique = true)
     private Integer cpf;
-
 
     @Getter @Setter
     @Column(name = "cliente_name", updatable = false, nullable = false)
