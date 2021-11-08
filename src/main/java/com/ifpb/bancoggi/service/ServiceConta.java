@@ -32,8 +32,7 @@ public class ServiceConta {
         //geraNumConta() já gera em inteiro
         //o numero da conta vai ser gerado, nao precisa passar como parametro
         senha = encriptaSenha(senha);
-        geraDataCriacao();
-        localizaConta(numConta);
+        Date dataCriacao = geraDataCriacao();
     }
 
     //acho que nao precisa dessa

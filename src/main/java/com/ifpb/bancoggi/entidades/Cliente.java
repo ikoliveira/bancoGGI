@@ -17,9 +17,8 @@ public class Cliente {
 
     @Id
     @Getter
-    @Column(name = "cliente_id", updatable = false, nullable = false)
+    @Column(name = "cliente_id", updatable = false, nullable = false, unique = true)
     private Integer cpf;
-
 
     @Getter @Setter
     @Column(name = "cliente_name", updatable = false, nullable = false)

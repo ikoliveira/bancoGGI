@@ -12,13 +12,11 @@ import java.util.Map;
 @NoArgsConstructor
 public class RepositoryConta {
 
-    private ServiceConta serviceConta;
     private Map<Integer, Conta> contasCadastradas = new HashMap<Integer, Conta>();
 
-    public void registraConta(String senhaEncriptada, Integer numGerado){
+    public void registraConta(Integer numGerado, String senhaEncriptada, Date dataCriacao){
         Double saldo = 0.0;
         Boolean ativa = true;
-        Date dataCriacao = serviceConta.geraDataCriacao();
 
         Conta conta = new Conta(numGerado, senhaEncriptada, saldo, ativa, dataCriacao);
         contasCadastradas.put(numGerado, conta);
