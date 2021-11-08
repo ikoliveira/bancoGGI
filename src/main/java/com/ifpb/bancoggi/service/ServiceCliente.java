@@ -37,7 +37,7 @@ public class ServiceCliente {
     }
 
     public Cliente exibeCliente(Long numConta) throws ObjectNotFoundException {
-        Optional<Cliente> cliente = repositoryCliente.findById(numConta);
+        Optional<Cliente> cliente = repositoryCliente.findById(Math.toIntExact(numConta));
         return cliente.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! ID: "));
     }
 
