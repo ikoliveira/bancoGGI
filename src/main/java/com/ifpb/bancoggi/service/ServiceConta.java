@@ -1,11 +1,10 @@
 package com.ifpb.bancoggi.service;
 
 import com.ifpb.bancoggi.entidades.Conta;
-import com.ifpb.bancoggi.repository.RepositoryConta;
+import com.ifpb.bancoggi.repository.RepositoryContaErrado;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -13,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class ServiceConta {
 
-    private RepositoryConta repositoryConta;
+    private RepositoryContaErrado repositoryConta;
 
     //eh private, so ta assim enquanto prepara registro nao funciona
     public Date geraDataCriacao(){

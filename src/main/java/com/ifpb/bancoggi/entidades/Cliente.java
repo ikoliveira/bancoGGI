@@ -1,8 +1,6 @@
 package com.ifpb.bancoggi.entidades;
 
 import lombok.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,34 +10,38 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = {"logado", "dataNascimento"})
-@Table(name = "tbl_clientes", schema = "db_relationships")
 public class Cliente {
 
     @Id
     @Getter
-    @Column(name = "cliente_id", updatable = false, nullable = false, unique = true)
+    @Column(name = "cpf", updatable = false, nullable = false, unique = true)
     private Integer cpf;
 
     @Getter @Setter
-    @Column(name = "cliente_name", updatable = false, nullable = false)
+    @Column(name = "nome", updatable = false, nullable = false)
     private String nome;
 
     @Getter @Setter
+    @Column(name = "dataNasc", updatable = false)
     private Date dataNascimento;
 
     @Getter @Setter
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "conta_cliente_id")
-    private Conta conta;
-
-    @Getter @Setter private String endereco;
+    @Column(name = "endereco", updatable = false, nullable = false)
+    private String endereco;
 
     @Getter @Setter
+    @Column(name = "logado", updatable = false, nullable = false)
     private boolean logado;
 
     @Getter @Setter
+    @Column(name = "email", updatable = false, nullable = false)
     private String email;
 
+    @Getter @Setter
+    //@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "conta_cliente_id")
+    private Conta conta;
 
     public boolean comparaEndeceo(String endereco){
 

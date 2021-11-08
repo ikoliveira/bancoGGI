@@ -2,16 +2,48 @@ package com.ifpb.bancoggi.controllers;
 
 import com.ifpb.bancoggi.entidades.Cliente;
 
+import com.ifpb.bancoggi.entidades.Conta;
+import com.ifpb.bancoggi.repository.RepositoryCliente;
+import com.ifpb.bancoggi.repository.RepositoryConta;
 import com.ifpb.bancoggi.service.ServiceCliente;
-import org.springframework.web.bind.annotation.RestController;
+import javassist.tools.rmi.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-
+@RequestMapping("/criandoCliente")
 public class ControllerCliente {
 
     private ServiceCliente serviceCliente;
+    private RepositoryCliente repositoryCliente;
+
+    @Autowired
+    public ControllerCliente(ServiceCliente serviceCliente) {
+        this.serviceCliente = serviceCliente;
+    }
+
+    @PostMapping
+    public Cliente criandoCliente(@RequestBody Cliente cliente){
+        Cliente clienteSalvo = serviceCliente.criandoCliente(cliente);
+        return clienteSalvo;
+    }
+
+    @GetMapping
+    public List<Cliente> exibeClientes(){
+
+        return serviceCliente.exibeClientes();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Cliente> exibeClientes(@PathVariable Long id) throws ObjectNotFoundException {
+        Cliente cliente = serviceCliente.exibeCliente(id);
+        return ResponseEntity.ok().body(cliente);
+    }
 
     public void requisitaCriacaoCliente(String cpf, String nome, int anoNascimento, int mesNascimento, int dataNascimento){
         Date date = new Date(anoNascimento, mesNascimento, dataNascimento);

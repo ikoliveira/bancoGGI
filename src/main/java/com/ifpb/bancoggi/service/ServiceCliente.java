@@ -2,17 +2,44 @@ package com.ifpb.bancoggi.service;
 
 import com.ifpb.bancoggi.entidades.Cliente;
 import com.ifpb.bancoggi.repository.RepositoryCliente;
+import javassist.tools.rmi.ObjectNotFoundException;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @NoArgsConstructor
 public class ServiceCliente {
 
+
     ServiceConta serviceConta;
-    RepositoryCliente clienteRepository;
+    RepositoryCliente repositoryCliente;
+
+    @Autowired
+    public ServiceCliente(RepositoryCliente repositoryCliente) {
+        this.repositoryCliente = repositoryCliente;
+    }
+
+    public Cliente criandoCliente(Cliente cliente){
+        Date data = new Date();
+        cliente.getConta().setDataCriacao(data);
+        Cliente clienteSalvo = repositoryCliente.save(cliente);
+        return clienteSalvo;
+    }
+    public List<Cliente> exibeClientes(){
+        return repositoryCliente.findAll();
+    }
+
+    public Cliente exibeCliente(Long numConta) throws ObjectNotFoundException {
+        Optional<Cliente> cliente = repositoryCliente.findById(numConta);
+        return cliente.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! ID: "));
+    }
 
     public void preparaRegistroCliente(String cpf, String nome, Date date) {
     }
