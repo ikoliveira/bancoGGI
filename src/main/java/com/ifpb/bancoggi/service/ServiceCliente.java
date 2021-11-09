@@ -1,9 +1,12 @@
 package com.ifpb.bancoggi.service;
 
 import com.ifpb.bancoggi.entidades.Cliente;
+import com.ifpb.bancoggi.entidades.Conta;
 import com.ifpb.bancoggi.repository.RepositoryCliente;
 import javassist.tools.rmi.ObjectNotFoundException;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,9 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@NoArgsConstructor
 public class ServiceCliente {
-
 
     ServiceConta serviceConta;
     RepositoryCliente repositoryCliente;
@@ -26,19 +27,27 @@ public class ServiceCliente {
         this.repositoryCliente = repositoryCliente;
     }
 
-    public Cliente criandoCliente(Cliente cliente){
+    @Getter @Setter
+    private Integer numConta;
+
+    public void criandoCliente(Cliente cliente){
         Date data = new Date();
         cliente.getConta().setDataCriacao(data);
-        Cliente clienteSalvo = repositoryCliente.save(cliente);
-        return clienteSalvo;
+        repositoryCliente.save(cliente);
     }
-    public List<Cliente> exibeClientes(){
+
+    public List<Cliente> listaClientes(){
         return repositoryCliente.findAll();
     }
 
-    public Cliente exibeCliente(Long numConta) throws ObjectNotFoundException {
-        Optional<Cliente> cliente = repositoryCliente.findById(Math.toIntExact(numConta));
-        return cliente.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! ID: "));
+    public Cliente pegaCliente(Integer cpf){
+        Optional<Cliente> cliente = repositoryCliente.findById(cpf);
+        return cliente.get();
+    }
+
+    public Conta pegaConta(Integer cpf){
+        Cliente cliente = pegaCliente(cpf);
+        return cliente.getConta();
     }
 
     public void preparaRegistroCliente(String cpf, String nome, Date date) {

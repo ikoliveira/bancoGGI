@@ -16,10 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/criandoCliente")
+@RequestMapping("/")
 public class ControllerCliente {
-
-
 
     private ServiceCliente serviceCliente;
     private RepositoryCliente repositoryCliente;
@@ -30,21 +28,25 @@ public class ControllerCliente {
     }
 
     @PostMapping
-    public Cliente criandoCliente(@RequestBody Cliente cliente){
-        Cliente clienteSalvo = serviceCliente.criandoCliente(cliente);
-        return clienteSalvo;
+    public void requisitaCriacaoCliente(@RequestBody Cliente cliente){
+        serviceCliente.criandoCliente(cliente);
     }
 
     @GetMapping
     public List<Cliente> exibeClientes(){
 
-        return serviceCliente.exibeClientes();
+        return serviceCliente.listaClientes();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> exibeClientes(@PathVariable Long id) throws ObjectNotFoundException {
-        Cliente cliente = serviceCliente.exibeCliente(id);
+    public ResponseEntity<Cliente> exibeClientes(@PathVariable Integer id){
+        Cliente cliente = serviceCliente.pegaCliente(id);
         return ResponseEntity.ok().body(cliente);
+    }
+
+    @GetMapping("Cliente/{cpf}")
+    public Conta requisitaConta(@PathVariable Integer cpf){
+        return serviceCliente.pegaConta(cpf);
     }
 
     public void requisitaCriacaoCliente(String cpf, String nome, int anoNascimento, int mesNascimento, int dataNascimento){
