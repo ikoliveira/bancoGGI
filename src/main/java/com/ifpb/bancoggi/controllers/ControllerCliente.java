@@ -32,46 +32,61 @@ public class ControllerCliente {
         serviceCliente.criandoCliente(cliente);
     }
 
-    @GetMapping
-    public List<Cliente> exibeClientes(){
+    @PutMapping("/{cpf}")
+    public void solicitaAtualizacaoClientes(@PathVariable Integer cpf, @RequestBody Cliente cliente){
+       serviceCliente.salvaCliente(cliente);
+    }
 
+    @DeleteMapping("/{cpf}")
+    public void solicitaExclusaoCliente(@PathVariable Integer cpf){
+        serviceCliente.deletaCliente(cpf);
+    }
+
+    @GetMapping
+    public List<Cliente> retornaClientes(){
         return serviceCliente.listaClientes();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cliente> exibeClientes(@PathVariable Integer id){
-        Cliente cliente = serviceCliente.pegaCliente(id);
+    @GetMapping("/{cpf}")
+    public ResponseEntity<Cliente> retornaDadosCliente(@PathVariable Integer cpf){
+        Cliente cliente = serviceCliente.pegaCliente(cpf);
         return ResponseEntity.ok().body(cliente);
     }
 
-    @GetMapping("Cliente/{cpf}")
+    @GetMapping("/{cpf}/nome")
+    public String retornaNome(@PathVariable Integer cpf){
+        return serviceCliente.pegaCliente(cpf).getNome();
+    }
+
+    @GetMapping("/{cpf}/dataNascimento")
+    public Date retornaDataNascimento(@PathVariable Integer cpf){
+        return serviceCliente.pegaCliente(cpf).getDataNascimento();
+    }
+
+    @GetMapping("/{cpf}/endereco")
+    public String retornaEndereco(@PathVariable Integer cpf){
+        return serviceCliente.pegaCliente(cpf).getEndereco();
+    }
+
+    @GetMapping("/{cpf}/email")
+    public String retornaEmail(@PathVariable Integer cpf){
+        return serviceCliente.pegaCliente(cpf).getEmail();
+    }
+
+    @GetMapping("/{cpf}/conta")
     public Conta requisitaConta(@PathVariable Integer cpf){
         return serviceCliente.pegaConta(cpf);
     }
 
-    public void requisitaCriacaoCliente(String cpf, String nome, int anoNascimento, int mesNascimento, int dataNascimento){
-        Date date = new Date(anoNascimento, mesNascimento, dataNascimento);
-        serviceCliente.preparaRegistroCliente(cpf, nome, date);
+    @GetMapping("/{cpf}/conta/saldo")
+    public Double retornaSaldo(@PathVariable Integer cpf){
+        return serviceCliente.pegaConta(cpf).getSaldo();
     }
 
-    public String retornaNomeCliente(String cpf){
-        Integer cpfConverter = Integer.parseInt(cpf);
-        return serviceCliente.nomeCliente(cpfConverter);
-    }
 
-    public String retornaEndereco(String cpf){
-        Integer cpfConvertido = trataCPF(cpf);
-        return serviceCliente.enderecoCliente(cpfConvertido);
-    }
-
-    public String retornaDadosCliente(String cpf){
-        Integer cpfConvertido = trataCPF(cpf);
-        return serviceCliente.dadosCliente(cpf);
-    }
-
-    public void ajustaNomeCliente(String cpf, String novoNome){
-        Integer cpfConvertido = trataCPF(cpf);
-        serviceCliente.atualizaNome(cpfConvertido, novoNome);
+    @PutMapping("/{cpf}/atualizaNome")
+    public void ajustaNomeCliente(@PathVariable Integer cpf, @RequestBody Cliente cliente){
+        serviceCliente.salvaCliente(cliente);
     }
 
     public void atualizaEndereco(String cpf, String novoEndereco){
@@ -89,7 +104,6 @@ public class ControllerCliente {
         }
 
         return false;
-
     }
 
     public void excluiCliente(String cpf, String senha){

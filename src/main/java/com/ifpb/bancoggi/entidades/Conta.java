@@ -15,19 +15,19 @@ public class Conta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
-    @Column(name = "id", updatable = false, nullable = false, unique = true)
+    @Column(name = "numConta", updatable = false, nullable = false, unique = true)
     private Integer numeroConta;
 
     @Getter @Setter
-    @Column(name = "senha", updatable = true, nullable = false)
+    @Column(name = "senha", updatable = true)
     private String senha;
 
     @Getter @Setter
-    @Column(name = "saldo", updatable = true, nullable = false)
+    @Column(name = "saldo", updatable = true)
     private Double saldo;
 
     @Getter @Setter
-    @Column(name = "status", updatable = true, nullable = false)
+    @Column(name = "status", updatable = true)
     private Boolean ativa;
 
     @Getter @Setter

@@ -1,24 +1,23 @@
 package com.ifpb.bancoggi.service;
 
-import com.ifpb.bancoggi.entidades.Conta;
-import com.ifpb.bancoggi.repository.RepositoryContaErrado;
-import lombok.NoArgsConstructor;
+
+import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-@NoArgsConstructor
+@Service
 public class ServiceConta {
 
-    private RepositoryContaErrado repositoryConta;
-
+    /**
     //eh private, so ta assim enquanto prepara registro nao funciona
     public Date geraDataCriacao(){
         Date data = new Date();
         return data;
     }
+
 
     //eh private, so ta assim enquanto prepara registro nao funciona
     public Conta localizaConta(Integer numConta){
@@ -59,7 +58,9 @@ public class ServiceConta {
         return repositoryConta.excluirConta(numGerado, senhaEncriptada);
     }
 
+
     public String encriptaSenha(String senha){
+
         return getHashMd5(senha);
     }
 
@@ -79,6 +80,6 @@ public class ServiceConta {
     public boolean comparaSenha(String senha){
         senha = encriptaSenha(senha);
         return false;
-    }
+    }**/
 
 }

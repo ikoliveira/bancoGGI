@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +22,8 @@ import java.util.Optional;
 @Service
 public class ServiceCliente {
 
-    ServiceConta serviceConta;
-    RepositoryCliente repositoryCliente;
+    private ServiceConta serviceConta;
+    private RepositoryCliente repositoryCliente;
 
     @Autowired
     public ServiceCliente(RepositoryCliente repositoryCliente) {
@@ -31,8 +34,20 @@ public class ServiceCliente {
     private Integer numConta;
 
     public void criandoCliente(Cliente cliente){
-        Date data = new Date();
+        String senha = cliente.getConta().getSenha();
+        String senhaEncriptada = encriptaSenha(senha);
+
+        Date data = geraDataCriacao();
+        cliente.setLogado(true);
+        cliente.getConta().setSaldo(0.0);
+        cliente.getConta().setAtiva(true);
         cliente.getConta().setDataCriacao(data);
+        cliente.getConta().setSenha(senhaEncriptada);
+
+        repositoryCliente.save(cliente);
+    }
+
+    public void salvaCliente(Cliente cliente){
         repositoryCliente.save(cliente);
     }
 
@@ -43,6 +58,10 @@ public class ServiceCliente {
     public Cliente pegaCliente(Integer cpf){
         Optional<Cliente> cliente = repositoryCliente.findById(cpf);
         return cliente.get();
+    }
+
+    public void deletaCliente(Integer cpf){
+        repositoryCliente.deleteById(cpf);
     }
 
     public Conta pegaConta(Integer cpf){
@@ -76,7 +95,7 @@ public class ServiceCliente {
     }
 
     public String solicitaEncriptacao(String senha) {
-        return serviceConta.encriptaSenha(senha);
+        return encriptaSenha(senha);
     }
 
     public boolean comparaSenha(Integer cpfTratado, String antiga) {
@@ -87,10 +106,31 @@ public class ServiceCliente {
 
     public void atualizaSenha(Integer cpfTratado, String nova) {
 
-
-
     }
 
     public void deletaCliente(Integer cpfTratado, String senha) {
     }
+
+    public Date geraDataCriacao(){
+        Date data = new Date();
+        return data;
+    }
+
+    public String encriptaSenha(String senha){
+        return getHashMd5(senha);
+    }
+
+    private String getHashMd5(String valor){
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        BigInteger hash = new BigInteger(1, md.digest(valor.getBytes()));
+        return hash.toString();
+
+    }
+
 }

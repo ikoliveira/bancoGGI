@@ -14,7 +14,7 @@ public class Cliente {
 
     @Id
     @Getter
-    @Column(name = "cpf", updatable = false, nullable = false, unique = true)
+    @Column(name = "cpf", updatable = false, nullable = false)
     private Integer cpf;
 
     @Getter @Setter
@@ -30,7 +30,7 @@ public class Cliente {
     private String endereco;
 
     @Getter @Setter
-    @Column(name = "logado", updatable = false, nullable = false)
+    @Column(name = "logado", updatable = false)
     private boolean logado;
 
     @Getter @Setter

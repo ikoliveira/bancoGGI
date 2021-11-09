@@ -3,6 +3,7 @@ package com.ifpb.bancoggi.controllers;
 import com.ifpb.bancoggi.entidades.Cliente;
 import com.ifpb.bancoggi.entidades.Conta;
 import com.ifpb.bancoggi.repository.RepositoryConta;
+import com.ifpb.bancoggi.service.ServiceCliente;
 import com.ifpb.bancoggi.service.ServiceConta;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,14 +19,12 @@ import java.util.Date;
 public class ControllerConta {
 
     private ServiceConta serviceConta;
+    private ServiceCliente serviceCliente;
 
-    public void requisitaCriacaoConta(String senha, Integer numConta){
-        serviceConta.preparaRegistroConta(senha, numConta);
-    }
 
-    @RequestMapping("/saldo")
-    public Double solicitaSaldo(Integer numConta){
-        return serviceConta.retornaSaldo(numConta);
+    @GetMapping
+    public Conta solicitaConta(@PathVariable Integer cpf){
+        return serviceCliente.pegaConta(cpf);
     }
 
     public Integer retornaNumConta(String cpf){
@@ -38,6 +37,7 @@ public class ControllerConta {
         return "joaquim";
     }
 
+    /**
     @RequestMapping("/saque")
     public void realizaSaque(Integer numConta, Double valor){
         serviceConta.saque(numConta, valor);
@@ -51,6 +51,6 @@ public class ControllerConta {
     @RequestMapping("/informacoesConta")
     public String exibeInformacoes(Integer numConta) {
         return serviceConta.localizaConta(numConta).toString();
-    }
+    }**/
 
 }
