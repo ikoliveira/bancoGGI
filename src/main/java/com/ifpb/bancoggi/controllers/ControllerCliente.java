@@ -4,13 +4,13 @@ import com.ifpb.bancoggi.entidades.Cliente;
 
 import com.ifpb.bancoggi.entidades.Conta;
 import com.ifpb.bancoggi.repository.RepositoryCliente;
-import com.ifpb.bancoggi.repository.RepositoryConta;
 import com.ifpb.bancoggi.service.ServiceCliente;
 import javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -78,37 +78,35 @@ public class ControllerCliente {
         return serviceCliente.pegaConta(cpf).getSaldo();
     }
 
-
     @PutMapping("/{cpf}")
     public void solicitaAtualizacaoCliente(@PathVariable Integer cpf, @RequestBody Cliente clienteAtual){
         serviceCliente.atualizaCliente(clienteAtual, cpf);
     }
 
-    public void atualizaEndereco(String cpf, String novoEndereco){
-        Integer cpfConvertido = trataCPF(cpf);
-        serviceCliente.atualizaEndereco(cpfConvertido, novoEndereco);
-    }
+    @PutMapping("/{cpf}/mudar-senha")
+    public boolean solicitouModificarSenha(@PathVariable Integer cpf, @RequestBody ArrayList<String> senhas){
 
-    public boolean solicitouModificarSenha(String cpf, String senhaAntiga, String novaSenha){
-        Integer cpfTratado = trataCPF(cpf);
-        String antiga = serviceCliente.solicitaEncriptacao(senhaAntiga);
-        if(serviceCliente.comparaSenha(cpfTratado, antiga)){
-            String nova = serviceCliente.solicitaEncriptacao(novaSenha);
-            serviceCliente.atualizaSenha(cpfTratado, nova);
+        String senhaAntiga = senhas.get(0);
+        String novaSenha = senhas.get(1);
+
+        String antiga = serviceCliente.encriptaSenha(senhaAntiga);
+
+        if(serviceCliente.comparaSenha(cpf, antiga)){
+            String nova = serviceCliente.encriptaSenha(novaSenha);
+            serviceCliente.atualizaSenha(cpf, nova);
             return true;
         }
-
         return false;
     }
 
+    @PutMapping("/{cpf}/saque")
+    public boolean saque(@PathVariable Integer cpf, @RequestBody Double valor){
+        return serviceCliente.atualizaSaldoConta(cpf, valor, "saque");
+    }
 
-
-    private Integer trataCPF(String cpf){
-        int TAMANHOCPF = 11;
-        if(cpf.length() != TAMANHOCPF){
-            return 0;
-        }
-        return Integer.parseInt(cpf);
+    @PutMapping("/{cpf}/deposito")
+    public boolean deposito(@PathVariable Integer cpf, @RequestBody Double valor){
+        return serviceCliente.atualizaSaldoConta(cpf, valor, "deposito");
     }
 
 }
