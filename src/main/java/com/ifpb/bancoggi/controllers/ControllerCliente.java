@@ -106,5 +106,15 @@ public class ControllerCliente {
         return serviceCliente.atualizaSaldoConta(cpf, valor, "deposito");
     }
 
+    @PutMapping("/{cpf}/transferencia")
+    public boolean transferencia(@PathVariable Integer cpf, @RequestBody ArrayList<String> dadosTransferencia){
+        Double valor = Double.parseDouble(dadosTransferencia.get(0));
+        Integer cpfDestinatario = Integer.parseInt(dadosTransferencia.get(1));
+
+        if (serviceCliente.atualizaSaldoConta(cpf, valor, "saque") && serviceCliente.atualizaSaldoConta(cpfDestinatario, valor, "deposito")){
+            return true;
+        } return false;
+    }
+
 
 }
