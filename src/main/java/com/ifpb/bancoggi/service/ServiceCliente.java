@@ -18,9 +18,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ServiceCliente {
@@ -38,6 +36,7 @@ public class ServiceCliente {
     public void criandoCliente(Cliente cliente){
         String senha = cliente.getConta().getSenha();
         String senhaEncriptada = encriptaSenha(senha);
+        Integer numConta = geraNumConta();
 
         Date data = geraDataCriacao();
         cliente.setLogado(true);
@@ -45,6 +44,7 @@ public class ServiceCliente {
         cliente.getConta().setAtiva(true);
         cliente.getConta().setDataCriacao(data);
         cliente.getConta().setSenha(senhaEncriptada);
+        cliente.getConta().setNumeroConta(numConta);
 
         repositoryCliente.save(cliente);
     }
@@ -134,8 +134,26 @@ public class ServiceCliente {
         return true;
     }
 
-    public String dadosCliente(String cpf) {
-        return "vai retornar o tostring";
+    private Integer geraNumConta(){
+
+        int lenConta = 7;
+        Random random = new Random();
+        ArrayList<Integer> inter = new ArrayList<>();
+
+        for(int i = 0; i <= lenConta; i ++){
+
+            Integer a = random.nextInt(9);
+            if(!inter.contains(a)){
+                inter.add(a);
+            }
+        }
+
+        String num = "";
+
+        for (Integer integer : inter) {
+            num += String.valueOf(integer);
+        }
+        return Integer.parseInt(num);
     }
 
 }

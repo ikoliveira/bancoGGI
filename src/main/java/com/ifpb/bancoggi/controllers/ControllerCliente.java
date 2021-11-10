@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/")
@@ -108,5 +105,6 @@ public class ControllerCliente {
     public boolean deposito(@PathVariable Integer cpf, @RequestBody Double valor){
         return serviceCliente.atualizaSaldoConta(cpf, valor, "deposito");
     }
+
 
 }
