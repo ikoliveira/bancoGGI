@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,6 +51,17 @@ public class ServiceCliente {
 
     public void salvaCliente(Cliente cliente){
         repositoryCliente.save(cliente);
+    }
+
+    public void atualizaCliente(Cliente clienteAtual, Integer cpf){
+        Cliente clienteAntigo = pegaCliente(cpf);
+
+        clienteAntigo.setNome(clienteAtual.getNome());
+        clienteAntigo.setDataNascimento(clienteAtual.getDataNascimento());
+        clienteAntigo.setEndereco(clienteAtual.getEndereco());
+        clienteAntigo.setEmail(clienteAtual.getEmail());
+
+        repositoryCliente.save(clienteAntigo);
     }
 
     public List<Cliente> listaClientes(){

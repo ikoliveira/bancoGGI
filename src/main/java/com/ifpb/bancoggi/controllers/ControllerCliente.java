@@ -32,11 +32,6 @@ public class ControllerCliente {
         serviceCliente.criandoCliente(cliente);
     }
 
-    @PutMapping("/{cpf}")
-    public void solicitaAtualizacaoClientes(@PathVariable Integer cpf, @RequestBody Cliente cliente){
-       serviceCliente.salvaCliente(cliente);
-    }
-
     @DeleteMapping("/{cpf}")
     public void solicitaExclusaoCliente(@PathVariable Integer cpf){
         serviceCliente.deletaCliente(cpf);
@@ -84,9 +79,9 @@ public class ControllerCliente {
     }
 
 
-    @PutMapping("/{cpf}/atualizaNome")
-    public void ajustaNomeCliente(@PathVariable Integer cpf, @RequestBody Cliente cliente){
-        serviceCliente.salvaCliente(cliente);
+    @PutMapping("/{cpf}")
+    public void solicitaAtualizacaoCliente(@PathVariable Integer cpf, @RequestBody Cliente clienteAtual){
+        serviceCliente.atualizaCliente(clienteAtual, cpf);
     }
 
     public void atualizaEndereco(String cpf, String novoEndereco){
@@ -106,10 +101,7 @@ public class ControllerCliente {
         return false;
     }
 
-    public void excluiCliente(String cpf, String senha){
-        Integer cpfTratado = trataCPF(cpf);
-        serviceCliente.deletaCliente(cpfTratado, senha);
-    }
+
 
     private Integer trataCPF(String cpf){
         int TAMANHOCPF = 11;

@@ -14,27 +14,27 @@ public class Cliente {
 
     @Id
     @Getter
-    @Column(name = "cpf", updatable = false, nullable = false)
+    @Column(name = "cpf")
     private Integer cpf;
 
     @Getter @Setter
-    @Column(name = "nome", updatable = false, nullable = false)
+    @Column(name = "nome")
     private String nome;
 
     @Getter @Setter
-    @Column(name = "dataNasc", updatable = false)
+    @Column(name = "dataNasc")
     private Date dataNascimento;
 
     @Getter @Setter
-    @Column(name = "endereco", updatable = false, nullable = false)
+    @Column(name = "endereco")
     private String endereco;
 
     @Getter @Setter
-    @Column(name = "logado", updatable = false)
+    @Column(name = "logado")
     private boolean logado;
 
     @Getter @Setter
-    @Column(name = "email", updatable = false, nullable = false)
+    @Column(name = "email")
     private String email;
 
     @Getter @Setter
