@@ -9,12 +9,9 @@ import java.util.Collections;
 @SpringBootApplication
 public class BancoggiApplication {
 
-	@Value("${PORT}")
-	private static String appPort;
-
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(BancoggiApplication.class);
-		app.setDefaultProperties(Collections.singletonMap("server.port", appPort));
+		app.setDefaultProperties(Collections.singletonMap("server.port", 8080));
 		app.run(args);
 	}
 
