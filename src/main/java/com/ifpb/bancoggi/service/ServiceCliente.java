@@ -19,13 +19,14 @@ public class ServiceCliente {
 
     private RepositoryCliente repositoryCliente;
 
+    @Getter @Setter
+    private Cliente clienteLogado;
+
     @Autowired
     public ServiceCliente(RepositoryCliente repositoryCliente) {
         this.repositoryCliente = repositoryCliente;
     }
 
-    @Getter @Setter
-    private Integer numConta;
 
     private Date geraDataCriacao(){
         Date data = new Date();
@@ -96,7 +97,7 @@ public class ServiceCliente {
             Integer numConta = geraNumConta();
             Date data = geraDataCriacao();
 
-            cliente.setLogado(true);
+            cliente.setLogado(false);
             cliente.getConta().setNumeroConta(numConta);
             cliente.getConta().setSaldo(110.0);
             cliente.getConta().setAtiva(true);
@@ -105,7 +106,6 @@ public class ServiceCliente {
             cliente.getConta().setSenhaConfirmada(null);
 
             repositoryCliente.save(cliente);
-            //repositoryCliente.
         }
     }
 
@@ -167,10 +167,10 @@ public class ServiceCliente {
         return true;
     }
 
-    public boolean modificaSenha(Integer cpf, ArrayList<String> senhas){
-        String senhaAntiga = senhas.get(0);
-        String novaSenha = senhas.get(1);
-        String senhaConfirmada = senhas.get(2);
+    public boolean modificaSenha(Integer cpf, HashMap<String, String> senhas){
+        String senhaAntiga = senhas.get("senhaAntiga");
+        String novaSenha = senhas.get("novaSenha");
+        String senhaConfirmada = senhas.get("senhaConfirmada");
 
         if (confirmarSenha(novaSenha, senhaConfirmada)){
             String antiga = encriptaSenha(senhaAntiga);
@@ -184,5 +184,16 @@ public class ServiceCliente {
         return false;
     }
 
+    public void logar(Integer cpf, String senha) {
+        Cliente cliente = pegaCliente(cpf);
+        String senhaEncriptada = encriptaSenha(senha);
 
+        if (comparaSenha(cpf, senhaEncriptada)){
+            cliente.setLogado(true);
+            this.clienteLogado = cliente;
+
+            repositoryCliente.save(cliente);
+        }
+
+    }
 }

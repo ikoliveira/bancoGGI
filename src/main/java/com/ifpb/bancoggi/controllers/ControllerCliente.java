@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/")
@@ -30,75 +28,98 @@ public class ControllerCliente {
         serviceCliente.criandoCliente(cliente);
     }
 
-    @DeleteMapping("/{cpf}")
-    public void solicitaExclusaoCliente(@PathVariable Integer cpf){
+    @DeleteMapping
+    public void solicitaExclusaoCliente(){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         serviceCliente.deletaCliente(cpf);
     }
 
-    @GetMapping
+    @GetMapping("/listaClientes")
     public List<Cliente> retornaClientes(){
         return serviceCliente.listaClientes();
     }
 
-    @GetMapping("/{cpf}")
-    public ResponseEntity<Cliente> retornaDadosCliente(@PathVariable Integer cpf){
-        Cliente cliente = serviceCliente.pegaCliente(cpf);
+    @GetMapping
+    public ResponseEntity<Cliente> retornaDadosCliente(){
+        Cliente cliente = serviceCliente.getClienteLogado();
         return ResponseEntity.ok().body(cliente);
     }
 
-    @GetMapping("/{cpf}/nome")
-    public String retornaNome(@PathVariable Integer cpf){
-        return serviceCliente.pegaCliente(cpf).getNome();
+    @PutMapping("/Login")
+    public void solicitaLogin(@RequestBody HashMap<String, String> dadosLogar){
+        Integer cpf = Integer.parseInt(dadosLogar.get("cpf"));
+        String senha = dadosLogar.get("senha");
+
+        serviceCliente.logar(cpf, senha);
     }
 
-    @GetMapping("/{cpf}/dataNascimento")
-    public Date retornaDataNascimento(@PathVariable Integer cpf){
+    @GetMapping("/nome") @ResponseBody
+    public Map<String, String> retornaNome(){
+
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
+        HashMap<String, String> map = new HashMap<>();
+        map.put("nome", serviceCliente.pegaCliente(cpf).getNome());
+        return map;
+    }
+
+    @GetMapping("/data-nascimento")
+    public Date retornaDataNascimento(){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         return serviceCliente.pegaCliente(cpf).getDataNascimento();
     }
 
-    @GetMapping("/{cpf}/endereco")
-    public String retornaEndereco(@PathVariable Integer cpf){
+    @GetMapping("/endereco")
+    public String retornaEndereco(){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         return serviceCliente.pegaCliente(cpf).getEndereco();
     }
 
-    @GetMapping("/{cpf}/email")
-    public String retornaEmail(@PathVariable Integer cpf){
+    @GetMapping("/email")
+    public String retornaEmail(){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         return serviceCliente.pegaCliente(cpf).getEmail();
     }
 
-    @GetMapping("/{cpf}/conta")
-    public Conta requisitaConta(@PathVariable Integer cpf){
+    @GetMapping("/conta")
+    public Conta requisitaConta(){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         return serviceCliente.pegaConta(cpf);
     }
 
-    @GetMapping("/{cpf}/conta/saldo")
-    public Double retornaSaldo(@PathVariable Integer cpf){
+    @GetMapping("/conta/saldo")
+    public Double retornaSaldo(){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         return serviceCliente.pegaConta(cpf).getSaldo();
     }
 
-    @PutMapping("/{cpf}")
-    public void solicitaAtualizacaoCliente(@PathVariable Integer cpf, @RequestBody Cliente clienteAtual){
+    @PutMapping
+    public void solicitaAtualizacaoCliente(@RequestBody Cliente clienteAtual){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         serviceCliente.atualizaCliente(clienteAtual, cpf);
     }
 
-    @PutMapping("/{cpf}/mudar-senha")
-    public boolean solicitouModificarSenha(@PathVariable Integer cpf, @RequestBody ArrayList<String> senhas){
+    @PutMapping("/mudar-senha")
+    public boolean solicitouModificarSenha(@RequestBody HashMap<String, String> senhas){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         return serviceCliente.modificaSenha(cpf, senhas);
 
     }
 
-    @PutMapping("/{cpf}/saque")
-    public boolean saque(@PathVariable Integer cpf, @RequestBody Double valor){
+    @PutMapping("/saque")
+    public boolean saque(@RequestBody Double valor){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         return serviceCliente.atualizaSaldoConta(cpf, valor, "saque");
     }
 
-    @PutMapping("/{cpf}/deposito")
-    public boolean deposito(@PathVariable Integer cpf, @RequestBody Double valor){
+    @PutMapping("/deposito")
+    public boolean deposito(@RequestBody Double valor){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         return serviceCliente.atualizaSaldoConta(cpf, valor, "deposito");
     }
 
-    @PutMapping("/{cpf}/transferencia")
-    public boolean transferencia(@PathVariable Integer cpf, @RequestBody ArrayList<String> dadosTransferencia){
+    @PutMapping("/transferencia")
+    public boolean transferencia(@RequestBody ArrayList<String> dadosTransferencia){
+        Integer cpf = serviceCliente.getClienteLogado().getCpf();
         Double valor = Double.parseDouble(dadosTransferencia.get(0));
         Integer cpfDestinatario = Integer.parseInt(dadosTransferencia.get(1));
 
