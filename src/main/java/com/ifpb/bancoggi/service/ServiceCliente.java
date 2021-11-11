@@ -7,13 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ServiceCliente {
@@ -28,16 +27,77 @@ public class ServiceCliente {
     @Getter @Setter
     private Integer numConta;
 
+    private Date geraDataCriacao(){
+        Date data = new Date();
+        return data;
+    }
+
+    private String getHashMd5(String valor){
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        BigInteger hash = new BigInteger(1, md.digest(valor.getBytes()));
+        return hash.toString();
+
+    }
+
+    private String encriptaSenha(String senha){
+        return getHashMd5(senha);
+    }
+
+    private boolean comparaSenha(Integer cpf, String antiga) {
+        return pegaCliente(cpf).getConta().getSenha().equals(antiga);
+
+    }
+
+    private boolean confirmarSenha(String senha, String senhaCornfirmada){
+        return senha.equals(senhaCornfirmada);
+    }
+
+    private Integer geraNumConta(){
+
+        int lenConta = 7;
+        Random random = new Random();
+        ArrayList<Integer> inter = new ArrayList<>();
+
+       while (inter.size()< lenConta){
+            Integer a = random.nextInt(9);
+
+            if(inter.size() == 0 && a != 0){
+                inter.add(a);
+            } else if(inter.size() != 0){
+                inter.add(a);
+            }
+        }
+
+        String num = "";
+
+        for (Integer integer : inter) {
+            num += String.valueOf(integer);
+        }
+
+        return Integer.parseInt(num);
+
+    }
+
     public void criandoCliente(Cliente cliente){
         String senha = cliente.getConta().getSenha();
+
         String senhaConfirmada = cliente.getConta().getSenhaConfirmada();
 
         String senhaEncriptada = encriptaSenha(senha);
         String senhaConfirmadaEncriptada = encriptaSenha(senhaConfirmada);
 
         if (confirmarSenha(senhaEncriptada, senhaConfirmadaEncriptada)){
+            Integer numConta = geraNumConta();
             Date data = geraDataCriacao();
+
             cliente.setLogado(true);
+            cliente.getConta().setNumeroConta(numConta);
             cliente.getConta().setSaldo(110.0);
             cliente.getConta().setAtiva(true);
             cliente.getConta().setDataCriacao(data);
@@ -78,37 +138,10 @@ public class ServiceCliente {
         return cliente.getConta();
     }
 
-    public boolean comparaSenha(Integer cpf, String antiga) {
-        return pegaCliente(cpf).getConta().getSenha().equals(antiga);
-
-    }
-
     public void atualizaSenha(Integer cpf, String nova) {
         Cliente cliente = pegaCliente(cpf);
         cliente.getConta().setSenha(nova);
         repositoryCliente.save(cliente);
-    }
-
-    public Date geraDataCriacao(){
-        Date data = new Date();
-        return data;
-    }
-
-    public String encriptaSenha(String senha){
-        return getHashMd5(senha);
-    }
-
-    private String getHashMd5(String valor){
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
-        BigInteger hash = new BigInteger(1, md.digest(valor.getBytes()));
-        return hash.toString();
-
     }
 
     public boolean atualizaSaldoConta(Integer cpf, double valor, String tipoAtualizacao){
@@ -134,12 +167,22 @@ public class ServiceCliente {
         return true;
     }
 
-    public boolean confirmarSenha(String senha, String senhaCornfirmada){
-        return senha.equals(senhaCornfirmada);
+    public boolean modificaSenha(Integer cpf, ArrayList<String> senhas){
+        String senhaAntiga = senhas.get(0);
+        String novaSenha = senhas.get(1);
+        String senhaConfirmada = senhas.get(2);
+
+        if (confirmarSenha(novaSenha, senhaConfirmada)){
+            String antiga = encriptaSenha(senhaAntiga);
+
+            if(comparaSenha(cpf, antiga)){
+                String nova = encriptaSenha(novaSenha);
+                atualizaSenha(cpf, nova);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public String dadosCliente(String cpf) {
-        return "vai retornar o tostring";
-    }
 
 }

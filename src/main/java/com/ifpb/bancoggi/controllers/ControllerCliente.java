@@ -83,21 +83,8 @@ public class ControllerCliente {
 
     @PutMapping("/{cpf}/mudar-senha")
     public boolean solicitouModificarSenha(@PathVariable Integer cpf, @RequestBody ArrayList<String> senhas){
+        return serviceCliente.modificaSenha(cpf, senhas);
 
-        String senhaAntiga = senhas.get(0);
-        String novaSenha = senhas.get(1);
-        String senhaConfirmada = senhas.get(2);
-
-        if (serviceCliente.confirmarSenha(novaSenha, senhaConfirmada)){
-            String antiga = serviceCliente.encriptaSenha(senhaAntiga);
-
-            if(serviceCliente.comparaSenha(cpf, antiga)){
-                String nova = serviceCliente.encriptaSenha(novaSenha);
-                serviceCliente.atualizaSenha(cpf, nova);
-                return true;
-            }
-        }
-        return false;
     }
 
     @PutMapping("/{cpf}/saque")
@@ -119,5 +106,6 @@ public class ControllerCliente {
             return true;
         } return false;
     }
+
 
 }

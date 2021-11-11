@@ -13,8 +13,7 @@ import java.util.Date;
 public class Conta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
+    @Getter @Setter
     @Column(name = "numConta")
     private Integer numeroConta;
 
