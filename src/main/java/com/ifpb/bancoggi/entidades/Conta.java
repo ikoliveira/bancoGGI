@@ -23,6 +23,9 @@ public class Conta {
     private String senha;
 
     @Getter @Setter
+    private String senhaConfirmada;
+
+    @Getter @Setter
     @Column(name = "saldo")
     private Double saldo;
 

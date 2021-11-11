@@ -3,18 +3,11 @@ package com.ifpb.bancoggi.service;
 import com.ifpb.bancoggi.entidades.Cliente;
 import com.ifpb.bancoggi.entidades.Conta;
 import com.ifpb.bancoggi.repository.RepositoryCliente;
-import javassist.tools.rmi.ObjectNotFoundException;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -37,16 +30,23 @@ public class ServiceCliente {
 
     public void criandoCliente(Cliente cliente){
         String senha = cliente.getConta().getSenha();
+        String senhaConfirmada = cliente.getConta().getSenhaConfirmada();
+
         String senhaEncriptada = encriptaSenha(senha);
+        String senhaConfirmadaEncriptada = encriptaSenha(senhaConfirmada);
 
-        Date data = geraDataCriacao();
-        cliente.setLogado(true);
-        cliente.getConta().setSaldo(110.0);
-        cliente.getConta().setAtiva(true);
-        cliente.getConta().setDataCriacao(data);
-        cliente.getConta().setSenha(senhaEncriptada);
+        if (confirmarSenha(senhaEncriptada, senhaConfirmadaEncriptada)){
+            Date data = geraDataCriacao();
+            cliente.setLogado(true);
+            cliente.getConta().setSaldo(110.0);
+            cliente.getConta().setAtiva(true);
+            cliente.getConta().setDataCriacao(data);
+            cliente.getConta().setSenha(senhaEncriptada);
+            cliente.getConta().setSenhaConfirmada(null);
 
-        repositoryCliente.save(cliente);
+            repositoryCliente.save(cliente);
+            //repositoryCliente.
+        }
     }
 
     public void atualizaCliente(Cliente clienteAtual, Integer cpf){
@@ -132,6 +132,10 @@ public class ServiceCliente {
         conta.setSaldo(novoSaldo);
         repositoryCliente.save(cliente);
         return true;
+    }
+
+    public boolean confirmarSenha(String senha, String senhaCornfirmada){
+        return senha.equals(senhaCornfirmada);
     }
 
     public String dadosCliente(String cpf) {

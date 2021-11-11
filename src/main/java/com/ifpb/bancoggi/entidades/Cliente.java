@@ -43,13 +43,4 @@ public class Cliente {
     @JoinColumn(name = "conta_cliente_id")
     private Conta conta;
 
-    public boolean comparaEndeceo(String endereco){
-
-        return this.endereco.equals(endereco);
-    }
-
-    public void logar(){
-        setLogado(true);
-    }
-
 }

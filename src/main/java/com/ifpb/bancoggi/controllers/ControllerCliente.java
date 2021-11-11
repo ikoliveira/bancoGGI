@@ -5,7 +5,6 @@ import com.ifpb.bancoggi.entidades.Cliente;
 import com.ifpb.bancoggi.entidades.Conta;
 import com.ifpb.bancoggi.repository.RepositoryCliente;
 import com.ifpb.bancoggi.service.ServiceCliente;
-import javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/")
@@ -88,13 +86,16 @@ public class ControllerCliente {
 
         String senhaAntiga = senhas.get(0);
         String novaSenha = senhas.get(1);
+        String senhaConfirmada = senhas.get(2);
 
-        String antiga = serviceCliente.encriptaSenha(senhaAntiga);
+        if (serviceCliente.confirmarSenha(novaSenha, senhaConfirmada)){
+            String antiga = serviceCliente.encriptaSenha(senhaAntiga);
 
-        if(serviceCliente.comparaSenha(cpf, antiga)){
-            String nova = serviceCliente.encriptaSenha(novaSenha);
-            serviceCliente.atualizaSenha(cpf, nova);
-            return true;
+            if(serviceCliente.comparaSenha(cpf, antiga)){
+                String nova = serviceCliente.encriptaSenha(novaSenha);
+                serviceCliente.atualizaSenha(cpf, nova);
+                return true;
+            }
         }
         return false;
     }
