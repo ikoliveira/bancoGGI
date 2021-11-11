@@ -105,7 +105,7 @@ public class ServiceCliente {
             cliente.getConta().setSenhaConfirmada(null);
 
             repositoryCliente.save(cliente);
-            //repositoryCliente.
+
         }
     }
 
