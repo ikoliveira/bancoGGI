@@ -88,10 +88,10 @@ public class ControllerCliente {
     }
 
     @GetMapping("/conta/saldo") @ResponseBody
-    public Map<String, Double> retornaSaldo(){
-        HashMap<String, Double> mapa = new HashMap<>();
-        mapa.put("saldo", serviceCliente.getClienteLogado().getConta().getSaldo());
-        return mapa;
+    public Map<String, String> retornaSaldo(){
+        map.clear();
+        map.put("saldo", String.valueOf(serviceCliente.getClienteLogado().getConta().getSaldo()));
+        return map;
     }
 
     @PutMapping
@@ -108,16 +108,16 @@ public class ControllerCliente {
     }
 
     @PutMapping("/saque")
-    public boolean saque(@RequestBody HashMap<String, Double> saque){
+    public boolean saque(@RequestBody HashMap<String, String> saque){
         Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        Double valor = saque.get("valor");
+        Double valor = Double.parseDouble(saque.get("valor"));
         return serviceCliente.atualizaSaldoConta(cpf, valor, "saque");
     }
 
     @PutMapping("/deposito")
-    public boolean deposito(@RequestBody HashMap<String, Double> deposito){
+    public boolean deposito(@RequestBody HashMap<String, String> deposito){
         Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        Double valor = deposito.get("valor");
+        Double valor = Double.parseDouble(deposito.get("valor"));
         return serviceCliente.atualizaSaldoConta(cpf, valor, "deposito");
     }
 

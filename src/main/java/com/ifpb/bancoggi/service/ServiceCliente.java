@@ -195,7 +195,6 @@ public class ServiceCliente {
 
     }
 
-
     public boolean transferencia(HashMap<String, String> dadosTransferencia) {
         Integer cpf = getClienteLogado().getCpf();
         Double valor = Double.parseDouble(dadosTransferencia.get("valor"));
