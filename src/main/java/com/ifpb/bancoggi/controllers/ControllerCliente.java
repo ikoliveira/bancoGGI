@@ -17,6 +17,7 @@ public class ControllerCliente {
 
     private ServiceCliente serviceCliente;
     private RepositoryCliente repositoryCliente;
+    private HashMap<String, String> map = new HashMap<>();
 
     @Autowired
     public ControllerCliente(ServiceCliente serviceCliente) {
@@ -55,41 +56,42 @@ public class ControllerCliente {
 
     @GetMapping("/nome") @ResponseBody
     public Map<String, String> retornaNome(){
-
-        Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        HashMap<String, String> map = new HashMap<>();
-        map.put("nome", serviceCliente.pegaCliente(cpf).getNome());
+        map.clear();
+        map.put("nome", serviceCliente.getClienteLogado().getNome());
         return map;
     }
 
-    @GetMapping("/data-nascimento")
-    public Date retornaDataNascimento(){
-        Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        return serviceCliente.pegaCliente(cpf).getDataNascimento();
+    @GetMapping("/data-nascimento") @ResponseBody
+    public Map<String, Date> retornaDataNascimento(){
+        HashMap<String, Date> mapa = new HashMap<>();
+        mapa.put("dataNascimento", serviceCliente.getClienteLogado().getDataNascimento());
+        return mapa;
     }
 
-    @GetMapping("/endereco")
-    public String retornaEndereco(){
-        Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        return serviceCliente.pegaCliente(cpf).getEndereco();
+    @GetMapping("/endereco") @ResponseBody
+    public Map<String, String> retornaEndereco(){
+        map.clear();
+        map.put("endereco", serviceCliente.getClienteLogado().getEndereco());
+        return map;
     }
 
-    @GetMapping("/email")
-    public String retornaEmail(){
-        Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        return serviceCliente.pegaCliente(cpf).getEmail();
+    @GetMapping("/email") @ResponseBody
+    public Map<String, String> retornaEmail(){
+        map.clear();
+        map.put("email", serviceCliente.getClienteLogado().getEmail());
+        return map;
     }
 
-    @GetMapping("/conta")
+    @GetMapping("/conta") @ResponseBody
     public Conta requisitaConta(){
-        Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        return serviceCliente.pegaConta(cpf);
+        return serviceCliente.getClienteLogado().getConta();
     }
 
-    @GetMapping("/conta/saldo")
-    public Double retornaSaldo(){
-        Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        return serviceCliente.pegaConta(cpf).getSaldo();
+    @GetMapping("/conta/saldo") @ResponseBody
+    public Map<String, Double> retornaSaldo(){
+        HashMap<String, Double> mapa = new HashMap<>();
+        mapa.put("saldo", serviceCliente.getClienteLogado().getConta().getSaldo());
+        return mapa;
     }
 
     @PutMapping
@@ -106,26 +108,24 @@ public class ControllerCliente {
     }
 
     @PutMapping("/saque")
-    public boolean saque(@RequestBody Double valor){
+    public boolean saque(@RequestBody HashMap<String, Double> saque){
         Integer cpf = serviceCliente.getClienteLogado().getCpf();
+        Double valor = saque.get("valor");
         return serviceCliente.atualizaSaldoConta(cpf, valor, "saque");
     }
 
     @PutMapping("/deposito")
-    public boolean deposito(@RequestBody Double valor){
+    public boolean deposito(@RequestBody HashMap<String, Double> deposito){
         Integer cpf = serviceCliente.getClienteLogado().getCpf();
+        Double valor = deposito.get("valor");
         return serviceCliente.atualizaSaldoConta(cpf, valor, "deposito");
     }
 
     @PutMapping("/transferencia")
-    public boolean transferencia(@RequestBody ArrayList<String> dadosTransferencia){
-        Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        Double valor = Double.parseDouble(dadosTransferencia.get(0));
-        Integer cpfDestinatario = Integer.parseInt(dadosTransferencia.get(1));
+    public boolean solicitaTransferencia(@RequestBody HashMap<String, String> dadosTransferencia){
 
-        if (serviceCliente.atualizaSaldoConta(cpf, valor, "saque") && serviceCliente.atualizaSaldoConta(cpfDestinatario, valor, "deposito")){
-            return true;
-        } return false;
+        return serviceCliente.transferencia(dadosTransferencia);
+
     }
 
 

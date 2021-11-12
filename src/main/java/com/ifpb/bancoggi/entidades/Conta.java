@@ -22,6 +22,7 @@ public class Conta {
     private String senha;
 
     @Getter @Setter
+    @Transient
     private String senhaConfirmada;
 
     @Getter @Setter

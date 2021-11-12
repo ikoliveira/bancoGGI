@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -99,7 +98,7 @@ public class ServiceCliente {
 
             cliente.setLogado(false);
             cliente.getConta().setNumeroConta(numConta);
-            cliente.getConta().setSaldo(110.0);
+            cliente.getConta().setSaldo(0.0);
             cliente.getConta().setAtiva(true);
             cliente.getConta().setDataCriacao(data);
             cliente.getConta().setSenha(senhaEncriptada);
@@ -116,7 +115,7 @@ public class ServiceCliente {
         clienteAntigo.setDataNascimento(clienteAtual.getDataNascimento());
         clienteAntigo.setEndereco(clienteAtual.getEndereco());
         clienteAntigo.setEmail(clienteAtual.getEmail());
-
+        this.clienteLogado = clienteAntigo;
         repositoryCliente.save(clienteAntigo);
     }
 
@@ -141,6 +140,7 @@ public class ServiceCliente {
     public void atualizaSenha(Integer cpf, String nova) {
         Cliente cliente = pegaCliente(cpf);
         cliente.getConta().setSenha(nova);
+        this.clienteLogado = cliente;
         repositoryCliente.save(cliente);
     }
 
@@ -163,6 +163,7 @@ public class ServiceCliente {
         }
 
         conta.setSaldo(novoSaldo);
+        this.clienteLogado = cliente;
         repositoryCliente.save(cliente);
         return true;
     }
@@ -195,5 +196,16 @@ public class ServiceCliente {
             repositoryCliente.save(cliente);
         }
 
+    }
+
+
+    public boolean transferencia(HashMap<String, String> dadosTransferencia) {
+        Integer cpf = getClienteLogado().getCpf();
+        Double valor = Double.parseDouble(dadosTransferencia.get("valor"));
+        Integer cpfDestinatario = Integer.parseInt(dadosTransferencia.get("cpfDestinatario"));
+
+        if (atualizaSaldoConta(cpf, valor, "saque") && atualizaSaldoConta(cpfDestinatario, valor, "deposito")){
+            return true;
+        } return false;
     }
 }
