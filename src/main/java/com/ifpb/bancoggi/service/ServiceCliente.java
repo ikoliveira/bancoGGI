@@ -67,9 +67,7 @@ public class ServiceCliente {
        while (inter.size()< lenConta){
             Integer a = random.nextInt(9);
 
-            if(inter.size() == 0 && a != 0){
-                inter.add(a);
-            } else if(inter.size() != 0){
+            if(inter.size() != 0 || (inter.size() == 0 && a != 0)){
                 inter.add(a);
             }
         }
@@ -102,7 +100,6 @@ public class ServiceCliente {
             cliente.getConta().setAtiva(true);
             cliente.getConta().setDataCriacao(data);
             cliente.getConta().setSenha(senhaEncriptada);
-            cliente.getConta().setSenhaConfirmada(null);
 
             repositoryCliente.save(cliente);
         }

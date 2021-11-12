@@ -21,7 +21,7 @@ public class Conta {
     @Column(name = "senha")
     private String senha;
 
-    @Getter @Setter
+    @Getter
     @Transient
     private String senhaConfirmada;
 

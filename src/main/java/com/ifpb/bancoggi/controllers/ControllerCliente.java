@@ -17,6 +17,7 @@ public class ControllerCliente {
 
     private ServiceCliente serviceCliente;
     private RepositoryCliente repositoryCliente;
+    private HashMap<String, String> map = new HashMap<>();
 
     @Autowired
     public ControllerCliente(ServiceCliente serviceCliente) {
@@ -55,9 +56,8 @@ public class ControllerCliente {
 
     @GetMapping("/nome") @ResponseBody
     public Map<String, String> retornaNome(){
-
         Integer cpf = serviceCliente.getClienteLogado().getCpf();
-        HashMap<String, String> map = new HashMap<>();
+        map.clear();
         map.put("nome", serviceCliente.pegaCliente(cpf).getNome());
         return map;
     }
